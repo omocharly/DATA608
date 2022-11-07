@@ -1,0 +1,158 @@
+<html>
+    <head>
+        <script src="https://d3js.org/d3.v5.min.js"> </script>
+        <title>Charles Ugiagbe Module 5 Assignment</title>
+    </head>
+    <body>
+        <h1>Module 5: Assignment</h1>
+        <h2>Charles Ugiagbe</h2>
+        <ol>
+            <li>
+                Create a function to reverse any word that you type in. This can be typed into either an input box or an alert box, and then print the result in a box or on the webpage.
+                <script type="text/javascript">
+                    function reverse_word() {
+                        var word = document.getElementById("word_q1").value
+                        var word_reversed = word.split("").reverse().join("");
+
+                        var t = document.getElementById('reversed_word');
+                        t.innerHTML = "<p>Reversed Word: " + word_reversed +"</p>"
+                    }
+                </script>
+
+                <p> <b>Enter a word to be reversed:</b> </p>
+                <form id="question_1">
+                    <label>Word:</label>
+				    <input id="word_q1" type="text">
+                    <input type="button" value="Reverse" onClick="reverse_word();">
+                </form>
+                <p><div id='reversed_word'></div> </p>
+            </li>
+
+            <li>
+                Create a function that takes an input number, and prints a table with the first 20 multiples of the number.
+                <script type="text/javascript">
+                    function create_table(num) {
+
+                        var num = document.getElementById("num_q2").value
+                        var table = "<table> <tr> <th> Multiples of " + num + "</th></tr>"
+                        for (let i = 1; i < 21; i++) {
+                            table += "<tr><td>" + i * num + "</td></tr>";
+                        }
+                        table += "</table>";
+
+                        var t = document.getElementById('table_q2');
+                        t.innerHTML = table;
+                    }
+                </script>
+
+                <p> <b> Enter a number to display the first 20 multiples:</b> </p>
+                <form id="question_2">
+                    <label>Number:</label>
+				    <input id="num_q2" type="number">
+                    <input type="button" value="Multiples" onClick="create_table();">
+                </form>
+                <p><div id='table_q2'></div> </p>
+
+            </li>
+
+            <li>
+                Write a function to load the presidents.csv data and display the data as an html table (you may use a csv parser from any available library, though I encourage you to try the d3 one)
+
+                <div id="table_q3"></div>
+
+                <script type="text/javascript">
+                    
+                    const presidents_dataset = d3.csv("https://raw.githubusercontent.com/bharbans/DATA608_Module5/main/data/presidents.csv").then( function(data) {  
+                        return data;
+                    });
+
+                    const pres_table = presidents_dataset.then(function (data) {
+                        var columns = ['Name','Height','Weight'];
+                        var table = d3.select('#table_q3').append('table');
+                        var table_header = table.append('thead').append("tr");
+
+                        table_header
+                            .selectAll("th")
+                            .data(columns)
+                            .enter()
+                            .append("th")
+                            .text(function(d) { return d; });
+                        
+                        var table_body = table.append("tbody");
+
+                        var rows = table_body
+                            .selectAll('tr')
+                            .data(data)
+                            .enter()
+                            .append('tr');
+                        
+                        var cells = rows
+                            .selectAll("td")
+                            .data(function(row){
+                                return columns.map(function (column) {
+                                    return { column: column, value: row[column] }
+                                    })
+                            })
+                            .enter()
+                            .append("td")
+                            .text(function (d) { return d.value });
+                        return data;
+                            
+                    });
+                </script>
+
+            </li>
+                        <p> </p>              
+
+            <li>
+                Write a function that will return that president’s height & weight when you type it in. This can be typed into either an input box or an alert box, and then print the result in a box or on the webpage
+                <script type="text/javascript">
+
+                pres_table.then(function(data){
+                        function dropdownChange (){
+                            var president = d3.select(this).property('value')
+                            var new_pres_data = data.filter(function(d){ return d.Name == president });
+
+                            //console.log(new_pres_data)
+                            var president_text = d3.select('#president_info')
+                            
+                            president_text.selectAll("text").remove();
+
+                            president_text.text("Name: "+ president)
+                                            .append("p")
+                                            .text("Height: "+ new_pres_data[0].Height +" inches")
+                                            .append("p")
+                                            .text("Weight: "+new_pres_data[0].Weight + " lbs");
+                        };
+
+                        var dropDown = d3.select("#dropdown_container")
+                                        .text("Please choose from the dropdown: ")
+                                        .append("select")
+                                        .attr("class","selection")
+                                        .attr("name","president")
+                                        .on("change", dropdownChange);
+
+                        var options = dropDown.selectAll("option")
+                                        .data(data)
+                                        .enter()
+                                        .append("option")
+                                        .text(function(d) { 
+                                            return d.Name;}
+                                        )
+                                        .attr("value",function(d) { 
+                                            return d.Name;}
+                                        );
+                    });
+                               
+
+                </script>
+
+                <p><div id='dropdown_container'></div> </p>
+                <p><div id='president_info'></div> </p>
+            </li>
+        </ol>
+
+    </body>
+
+
+</html>
