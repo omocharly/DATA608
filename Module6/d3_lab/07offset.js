@@ -42,8 +42,10 @@ d3.csv('ue_industry.csv', data => {
         .enter().append('path')
         .attr('d', d => stackArea(d))
         .attr('class', d => 'path7')
+    
         // code addition by Charles Ugiagbe
         .attr('transform', 'translate(100, -275)')
+    
         .style('fill', d => fillScale(d.key));
 
 });
